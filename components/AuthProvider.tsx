@@ -102,11 +102,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .eq("id", userId)
           .maybeSingle()
           .then(({ data }) => {
-            if (active) setProfile((data as Profile | null) ?? null);
-          })
-          .finally(() => {
-            if (active) setLoading(false);
-          });
+  if (active) {
+    setProfile((data as Profile | null) ?? null);
+    setLoading(false);
+  }
+});
       }, 0);
     });
 

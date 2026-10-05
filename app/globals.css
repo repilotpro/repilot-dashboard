@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7fbff;
+  --foreground: #10233f;
+  --navy: #10233f;
+  --navy-deep: #12365f;
+  --muted: #5d6f87;
+  --cyan: #63d4ff;
+  --cyan-ink: #2b95b8;
+  --orange: #ffab45;
+  --line: rgba(21, 45, 78, 0.14);
+  --card: rgba(255, 255, 255, 0.82);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+}
+
+@theme {
+  --color-navy: #10233f;
+  --color-ink: #12365f;
+  --color-muted: #5d6f87;
+  --color-cyan: #63d4ff;
+  --color-accent: #ffab45;
+  --color-accent-400: #ffc067;
+  --color-accent-500: #ffab45;
+  --color-accent-600: #ff9e35;
+  --color-brand-25: #f0faff;
+  --color-brand-50: #e6f7fd;
+  --color-brand-100: #cceffb;
+  --color-brand-200: #99dff7;
+  --color-brand-300: #63d4ff;
+  --color-brand-400: #3bb8e8;
+  --color-brand-500: #245f92;
+  --color-brand-600: #1a4a73;
+  --color-brand-700: #12365f;
+  --color-brand-800: #10233f;
+  --color-brand-900: #0b1426;
+  --color-brand-950: #070e1a;
+}
+
+body {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(99, 212, 255, 0.22), transparent 28%),
+    radial-gradient(circle at 88% 0%, rgba(255, 171, 69, 0.16), transparent 26%),
+    linear-gradient(145deg, #f7fbff, #eaf1f8);
+  color: var(--foreground);
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+body:has(.admin-app) {
+  background: #f6f8fb;
+  color: #10233f;
+}
+
+.field {
+  width: 100%;
+  border: 1px solid rgba(21, 45, 78, 0.14);
+  border-radius: 12px;
+  background: #fff;
+  color: #10233f;
+  padding: 12px 14px;
+  outline: none;
+}
+
+.field:focus {
+  border-color: #43a6ca;
+  box-shadow: 0 0 0 3px rgba(99, 212, 255, 0.28);
+}
+
+.field:disabled {
+  background: rgba(18, 54, 95, 0.04);
+  color: #6b7e95;
+}
+
+.field-label {
+  display: grid;
+  gap: 7px;
+  color: #52657c;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.btn-primary {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #ff9e35, #ffc067);
+  color: #17213a;
+  font-weight: 800;
+  box-shadow: 0 14px 35px rgba(255, 158, 53, 0.22);
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.glass-card {
+  border: 1px solid rgba(21, 45, 78, 0.14);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 24px 70px rgba(30, 64, 105, 0.1);
+  backdrop-filter: blur(16px);
+}

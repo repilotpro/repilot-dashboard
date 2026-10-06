@@ -15,12 +15,16 @@ import { hasPublicSupabaseConfig } from "@/lib/supabase/env";
 import type { Profile } from "@/lib/auth/profile";
 import LoginModal from "@/components/LoginModal";
 
+export type AuthMode = "signin" | "signup";
+
 type AuthContextValue = {
   user: User | null;
   profile: Profile | null;
   loading: boolean;
   loginOpen: boolean;
-  openLogin: () => void;
+  authMode: AuthMode;
+  verifiedNotice: boolean;
+  openLogin: (mode?: AuthMode) => void;
   closeLogin: () => void;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -38,6 +42,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<AuthMode>("signin");
+  const [verifiedNotice, setVerifiedNotice] = useState(false);
 
   const refreshProfile = useCallback(async () => {
     if (!supabase) {
@@ -64,9 +70,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("login") !== "1") return;
+    const wantsLogin = params.get("login") === "1";
+    const verified = params.get("verified") === "1";
+    if (!wantsLogin && !verified) return;
+    if (verified) {
+      setAuthMode("signin");
+      setVerifiedNotice(true);
+    }
     setLoginOpen(true);
     params.delete("login");
+    params.delete("verified");
     const next = params.toString();
     window.history.replaceState(null, "", `${window.location.pathname}${next ? `?${next}` : ""}`);
   }, []);
@@ -102,11 +115,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .eq("id", userId)
           .maybeSingle()
           .then(({ data }) => {
-  if (active) {
-    setProfile((data as Profile | null) ?? null);
-    setLoading(false);
-  }
-});
+            if (active) setProfile((data as Profile | null) ?? null);
+          })
+          .then(() => {
+            if (active) setLoading(false);
+          });
       }, 0);
     });
 
@@ -116,8 +129,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [supabase]);
 
-  const openLogin = useCallback(() => setLoginOpen(true), []);
-  const closeLogin = useCallback(() => setLoginOpen(false), []);
+  const openLogin = useCallback((mode: AuthMode = "signin") => {
+    setAuthMode(mode);
+    setLoginOpen(true);
+  }, []);
+  const closeLogin = useCallback(() => {
+    setLoginOpen(false);
+    setVerifiedNotice(false);
+  }, []);
 
   const signOut = useCallback(async () => {
     if (supabase) await supabase.auth.signOut();
@@ -131,12 +150,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profile,
       loading,
       loginOpen,
+      authMode,
+      verifiedNotice,
       openLogin,
       closeLogin,
       signOut,
       refreshProfile,
     }),
-    [user, profile, loading, loginOpen, openLogin, closeLogin, signOut, refreshProfile],
+    [user, profile, loading, loginOpen, authMode, verifiedNotice, openLogin, closeLogin, signOut, refreshProfile],
   );
 
   return (

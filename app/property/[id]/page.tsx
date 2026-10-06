@@ -120,14 +120,13 @@ export default function PropertyDetailPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-      <div className="mb-5 flex items-center justify-between gap-4">
+      <div className="mb-5">
         <Link
           href="/"
           className="rounded-full border border-[rgba(18,54,95,0.14)] bg-white px-4 py-2 text-sm font-extrabold text-[#12365f]"
         >
           ← Back to search
         </Link>
-        <img src="/repilot-logo.png" alt="RePilot" className="h-11 w-auto" />
       </div>
 
       <div className="relative min-h-[320px] overflow-hidden rounded-[28px] border border-[rgba(21,45,78,0.12)] bg-[#d5e4e9] shadow-[0_28px_70px_rgba(30,64,105,0.16)] sm:min-h-[420px]">

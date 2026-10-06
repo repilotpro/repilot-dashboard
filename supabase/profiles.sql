@@ -1,4 +1,6 @@
--- Profiles table, indexes, and signup trigger for admin-created users.
+-- Profiles table, indexes, and signup trigger.
+-- Public signUp stores the name in raw_user_meta_data.full_name.
+-- This trigger copies that name and defaults role to user.
 -- Run once in the Supabase SQL editor.
 
 create extension if not exists pgcrypto;
@@ -52,6 +54,27 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+create or replace function public.handle_user_verification()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.email_confirmed_at is not null and (old.email_confirmed_at is null or old.email_confirmed_at is distinct from new.email_confirmed_at) then
+    update public.profiles
+    set is_verified = true, updated_at = now()
+    where id = new.id;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_verified on auth.users;
+create trigger on_auth_user_verified
+  after update of email_confirmed_at on auth.users
+  for each row execute procedure public.handle_user_verification();
 
 drop policy if exists "Users can view own profile" on public.profiles;
 create policy "Users can view own profile"

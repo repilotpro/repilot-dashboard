@@ -89,7 +89,7 @@ export default function Header() {
         ) : (
           <button
             type="button"
-            onClick={openLogin}
+            onClick={() => openLogin("signin")}
             className="rounded-full border border-[rgba(18,54,95,0.16)] bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-[#12365f]"
           >
             Login
